@@ -1,0 +1,28 @@
+from nltk.sentiment import SentimentIntensityAnalyzer
+from requests_html import HTMLSession
+
+session = HTMLSession()
+URL = "https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB/sections/CAQiXENCQVNQd29JTDIwdk1EbHpNV1lTQW1WdUdnSlZVeUlQQ0FRYUN3b0pMMjB2TURsNU5IQnRLaG9LR0FvVVRVRlNTMFZVVTE5VFJVTlVTVTlPWDA1QlRVVWdBU2dBKioIAComCAoiIENCQVNFZ29JTDIwdk1EbHpNV1lTQW1WdUdnSlZVeWdBUAFQAQ?hl=en-US&gl=US&ceid=US%3Aen"
+r = session.get(URL)
+r.html.render(sleep = 1, scrolldown = 5)
+articles = r.html.find('article')
+
+cs = []
+analyzer = SentimentIntensityAnalyzer()
+for item in articles:
+    try:
+        newsitem = item.find('h3', first=True) 
+        title = newsitem.text
+        
+        cs.append(analyzer.polarity_scores(str(title))['compound'])
+    except:
+        pass
+
+try:
+    while True:
+        cs.remove(0.0)
+except ValueError:
+    pass
+
+print(cs)
+print(sum(cs)/len(cs))
