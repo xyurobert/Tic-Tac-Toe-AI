@@ -158,124 +158,142 @@ print('Winrate: ' + str((wins/5000)))
 print("Winrate computed! Now user can play against agent")
 
 #game against human opponent
-board = np.array([1,1,1,1,1,1,1,1,1]) 
-finished = False
-x = 0
-while(not finished):
-    reshapedBoard = np.reshape(board,(3,3))
-    print(board)
-    action,_ = model.predict(board)
-    print("Model chooses to move: " + str(action))
-    board[action] = 2
-    emptySpaces = np.where(board == 1)
-    emptySpacesArray = np.asarray(emptySpaces)
-    print(emptySpaces)
 
-    for i in range(3): #render
-        print("|", end = "")
-        for j in range(3):
-            if reshapedBoard[i][j] == 1:
-                print("",end = " |")
-            if reshapedBoard[i][j] == 0:
-                print("", end = "O|")
-            if reshapedBoard[i][j] == 2:
-                print("", end = "X|")
-        print("")
-
-    boardCopy = board - 1
-    for i in range(3): #row and column 
-        if sum(boardCopy[3*i:(i+1)*3]) == 3:
-            print("Model Wins!")
-            finished = True
-        if sum(boardCopy[3*i:(i+1)*3]) == -3:
-            print("Player Wins!")
-            finished = True
-        if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == 3:
-            print("Model Wins!")
-            finished = True
-        if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == -3:
-            print("Player Wins!")
-            finished = True
-        
-        #diagonals
-        if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == 3:
-            print("Model Wins!")
-            finished = True
-        if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == -3:
-            print("Player Wins!")
-            finished = True
-        if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == 3:
-            print("Model Wins!")
-            finished = True
-        if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == -3:
-            print("Player Wins!")
-            finished = True
-        
-        #tie
-        emptySpacesList = list(emptySpaces)
-        for j in boardCopy:
-            if j == 0:
-                emptySpacesList.append(j)
-        emptySpacesList.pop(0)
-        if not emptySpacesList:
-            print("Tie!")
-            finished = True
-
-    while(x == 0):
-        val = input("Enter your value: ")
-        if int(val) in (emptySpacesArray[0, :]):
-            board[int(val)] = 0
-            x = 1
-        else:
-            print("Please enter in a valid space")
-
+stillPlay = True
+while(stillPlay):
+    finished = False
+    board = np.array([1,1,1,1,1,1,1,1,1]) 
     x = 0
-    for i in range(3): #render
-        print("|", end = "")
-        for j in range(3):
-            if reshapedBoard[i][j] == 1:
-                print("",end = " |")
-            if reshapedBoard[i][j] == 0:
-                print("", end = "O|")
-            if reshapedBoard[i][j] == 2:
-                print("", end = "X|")
-        print("")
+    while(not finished):
+        reshapedBoard = np.reshape(board,(3,3))
+        action,_ = model.predict(board)
+        print("Model chooses to move: " + str(action))
+        board[action] = 2
+        emptySpaces = np.where(board == 1)
+        emptySpacesArray = np.asarray(emptySpaces)
 
-    boardCopy = board - 1
-    for i in range(3): #row and column 
-        if sum(boardCopy[3*i:(i+1)*3]) == 3:
-            print("Model Wins!")
-            finished = True
-        if sum(boardCopy[3*i:(i+1)*3]) == -3:
-            print("Player Wins!")
-            finished = True
-        if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == 3:
-            print("Model Wins!")
-            finished = True
-        if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == -3:
-            print("Player Wins!")
-            finished = True
-        
-        #diagonals
-        if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == 3:
-            print("Model Wins!")
-            finished = True
-        if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == -3:
-            print("Player Wins!")
-            finished = True
-        if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == 3:
-            print("Model Wins!")
-            finished = True
-        if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == -3:
-            print("Player Wins!")
-            finished = True
-        
-        #tie
-        emptySpacesList = list(emptySpaces)
-        for j in boardCopy:
-            if j == 0:
-                emptySpacesList.append(j)
-        emptySpacesList.pop(0)
-        if not emptySpacesList:
-            print("Tie!")
-            finished = True
+        for i in range(3): #render
+            print("|", end = "")
+            for j in range(3):
+                if reshapedBoard[i][j] == 1:
+                    print("",end = " |")
+                if reshapedBoard[i][j] == 0:
+                    print("", end = "O|")
+                if reshapedBoard[i][j] == 2:
+                    print("", end = "X|")
+            print("")
+
+        boardCopy = board - 1
+
+        for i in range(3): #row and column 
+            if sum(boardCopy[3*i:(i+1)*3]) == 3:
+                print("Model Wins!")
+                finished = True
+            if sum(boardCopy[3*i:(i+1)*3]) == -3:
+                print("Player Wins!")
+                finished = True
+            if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == 3:
+                print("Model Wins!")
+                finished = True
+            if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == -3:
+                print("Player Wins!")
+                finished = True
+            
+            #diagonals
+            if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == 3:
+                print("Model Wins!")
+                finished = True
+                
+            if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == -3:
+                print("Player Wins!")
+                finished = True
+                
+            if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == 3:
+                print("Model Wins!")
+                finished = True
+                
+            if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == -3:
+                print("Player Wins!")
+                finished = True
+                
+            
+            #tie
+            emptySpacesList = list(emptySpaces)
+            for j in boardCopy:
+                if j == 0:
+                    emptySpacesList.append(j)
+            emptySpacesList.pop(0)
+            if not emptySpacesList:
+                print("Tie!")
+                finished = True
+                
+            if finished:
+                break
+
+        while(x == 0):
+            val = input("Enter your value: ")
+            if int(val) in (emptySpacesArray[0, :]):
+                board[int(val)] = 0
+                x = 1
+            else:
+                print("Please enter in a valid space")
+
+        x = 0
+        for i in range(3): #render
+            print("|", end = "")
+            for j in range(3):
+                if reshapedBoard[i][j] == 1:
+                    print("",end = " |")
+                if reshapedBoard[i][j] == 0:
+                    print("", end = "O|")
+                if reshapedBoard[i][j] == 2:
+                    print("", end = "X|")
+            print("")
+
+        boardCopy = board - 1
+        for i in range(3): #row and column 
+            if sum(boardCopy[3*i:(i+1)*3]) == 3:
+                print("Model Wins!")
+                finished = True
+            if sum(boardCopy[3*i:(i+1)*3]) == -3:
+                print("Player Wins!")
+                finished = True
+            if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == 3:
+                print("Model Wins!")
+                finished = True
+            if (boardCopy[i] + boardCopy[i+3] + boardCopy[i+6]) == -3:
+                print("Player Wins!")
+                finished = True
+            
+            #diagonals
+            if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == 3:
+                print("Model Wins!")
+                finished = True
+            if (boardCopy[0] + boardCopy[4] + boardCopy[8]) == -3:
+                print("Player Wins!")
+                finished = Trueye
+            if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == 3:
+                print("Model Wins!")
+                finished = True
+            if (boardCopy[2] + boardCopy[4] + boardCopy[6]) == -3:
+                print("Player Wins!")
+                finished = True
+            
+            #tie
+            emptySpacesList = list(emptySpaces)
+            for j in boardCopy:
+                if j == 0:
+                    emptySpacesList.append(j)
+            emptySpacesList.pop(0)
+            if not emptySpacesList:
+                print("Tie!")
+                finished = True
+            
+            if finished:
+                break
+
+    repeat = input("Do you want to play again? ")
+    if repeat.lower() == "yes":
+        stillPlay = True
+    else:
+        stillPlay = False
