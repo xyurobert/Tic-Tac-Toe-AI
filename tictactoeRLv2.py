@@ -229,7 +229,10 @@ while(stillPlay):
                 
             if finished:
                 break
-
+                
+        if finished:
+            break
+        
         while(x == 0):
             val = input("Enter your value: ")
             if int(val) in (emptySpacesArray[0, :]):
